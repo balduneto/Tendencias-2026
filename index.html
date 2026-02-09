@@ -1,481 +1,252 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  TrendingUp, 
-  Cpu, 
-  Leaf, 
-  Users, 
-  ChevronRight, 
-  Info, 
-  Lightbulb, 
-  ShieldCheck, 
-  Zap, 
-  Globe, 
-  BrainCircuit, 
-  X, 
-  Maximize2, 
-  BarChart4, 
-  Target, 
-  Layers, 
-  BookOpen, 
-  MousePointer2 
-} from 'lucide-react';
-
-const App = () => {
-  const [activePillar, setActivePillar] = useState('all');
-  const [selectedTrend, setSelectedTrend] = useState(null);
-  const [showHint, setShowHint] = useState(true);
-
-  const logoUrl = "https://i.postimg.cc/RZ7Shjmy/DET_-_azul.png";
-
-  const pillars = [
-    { id: 'all', name: 'Todos', icon: Globe, color: 'bg-slate-500', border: 'border-slate-500' },
-    { id: 'vision', name: 'Visão & Estratégia', icon: TrendingUp, color: 'bg-blue-600', border: 'border-blue-600' },
-    { id: 'ai', name: 'IA & Digital', icon: Cpu, color: 'bg-purple-600', border: 'border-purple-600' },
-    { id: 'sustainability', name: 'Sustentabilidade', icon: Leaf, color: 'bg-emerald-600', border: 'border-emerald-600' },
-    { id: 'org', name: 'Organizações', icon: Users, color: 'bg-orange-600', border: 'border-orange-600' },
-  ];
-
-  const trends = [
-    {
-      id: 1,
-      pillar: 'vision',
-      title: 'CEO Aumentado',
-      description: 'Liderança que utiliza IA para decisões em tempo real, agindo como líder de orquestra entre humanos e sistemas.',
-      details: ['Copiloto de Decisão', 'Ciclo curto decisão-ação', 'Vantagem competitiva pessoal'],
-      insight: 'O desafio não é mais entender a IA, mas usá-la para governar com precisão cirúrgica.',
-      maturity: 85,
-      status: 'Consolidação'
-    },
-    {
-      id: 2,
-      pillar: 'vision',
-      title: 'Estratégia por Cenários',
-      description: 'Abandono de planos rígidos de 5 anos em favor de árvores estratégicas dinâmicas com planos B e C automáticos.',
-      details: ['Multiplicidade de futuros', 'Testes de estresse digitais', 'Alocação dinâmica de recursos'],
-      insight: 'Prepare-se para o "Cisne Negro" através de simulações constantes impulsionadas por IA.',
-      maturity: 70,
-      status: 'Consolidação'
-    },
-    {
-      id: 3,
-      pillar: 'vision',
-      title: 'Soberania Estratégica',
-      description: 'Equilíbrio entre controle de ativos críticos e abertura para inovação rápida, sem burocracia excessiva.',
-      details: ['Priorização de ativos essenciais', 'Dependências aceitáveis', 'Opcionalidade estratégica'],
-      insight: 'Soberania não é autossuficiência, é ter a opção de retomar o controle quando necessário.',
-      maturity: 60,
-      status: 'Integração'
-    },
-    {
-      id: 4,
-      pillar: 'vision',
-      title: 'China como Referência (CaaB)',
-      description: 'A China deixa de ser "imitadora" para ser o padrão global em velocidade, escala e integração vertical.',
-      details: ['Inversão do ponto de vista', 'Benchmark de integração sistêmica', 'Testes de estresse de velocidade'],
-      insight: 'Qualquer estratégia industrial sem a China como referência estrutural está incompleta.',
-      maturity: 90,
-      status: 'Consolidação'
-    },
-    {
-      id: 5,
-      pillar: 'ai',
-      title: 'IA Agêntica',
-      description: 'Evolução de chatbots para agentes autônomos que planejam e executam objetivos complexos sem supervisão humana constante.',
-      details: ['Sistemas de planejamento autônomo', 'Interoperabilidade de ecossistemas', 'Fim do prompt linear'],
-      insight: 'A IA deixa de ser uma assistente para se tornar um membro ativo e operacional da equipe.',
-      maturity: 75,
-      status: 'Consolidação'
-    },
-    {
-      id: 6,
-      pillar: 'ai',
-      title: 'Rastreamento de Proveniência',
-      description: 'Uso de marcas d’água invisíveis e blockchain para certificar a autenticidade de conteúdos contra deepfakes.',
-      details: ['Padrão C2PA', 'Blockchain de conteúdo', 'Selo "Made by Human"'],
-      insight: 'A confiança técnica é a nova moeda de troca em um mundo saturado de conteúdo sintético.',
-      maturity: 65,
-      status: 'Integração'
-    },
-    {
-      id: 7,
-      pillar: 'ai',
-      title: 'SLMs (Small Language Models)',
-      description: 'Modelos de linguagem menores, especializados, privados e eficientes, superando os gigantes generalistas em tarefas específicas.',
-      details: ['Otimização de custos/inferência', 'Soberania de dados "on-premise"', 'Hiperpersonalização preditiva'],
-      insight: 'Modelos leves e cirúrgicos garantem segurança e economia para a inteligência proprietária.',
-      maturity: 80,
-      status: 'Consolidação'
-    },
-    {
-      id: 8,
-      pillar: 'ai',
-      title: 'Ecossistema Espacial',
-      description: 'A integração de óculos XR/AR transforma o consumo 2D em experiências imersivas onde conteúdo e compra são um só.',
-      details: ['Conteúdo transacional imersivo', 'Gêmeos digitais universais', 'Vision Commerce (pagamento por olhar)'],
-      insight: 'Não visitamos mais sites; vivemos a experiência do produto em nosso ambiente.',
-      maturity: 50,
-      status: 'Integração'
-    },
-    {
-      id: 9,
-      pillar: 'sustainability',
-      title: 'Escopo 4 (Impacto Evitado)',
-      description: 'Medição do quanto as soluções da empresa ajudam seus clientes e o planeta a economizar emissões.',
-      details: ['Cálculo de contribuição positiva', 'Diferenciação competitiva CSRD', 'Venda baseada em impacto'],
-      insight: 'Não basta não poluir; o valor agora reside em quanto você ajuda o ecossistema a descarbonizar.',
-      maturity: 45,
-      status: 'Exploração'
-    },
-    {
-      id: 10,
-      pillar: 'sustainability',
-      title: 'IA Circular',
-      description: 'IA orquestrando o ciclo de vida total: design para reparabilidade, manutenção preditiva e reciclagem automatizada.',
-      details: ['Eco-design generativo', 'Passaporte digital de componentes', 'Logística reversa inteligente'],
-      insight: 'O lixo torna-se recurso valioso através da visão computacional e análise de dados.',
-      maturity: 55,
-      status: 'Integração'
-    },
-    {
-      id: 11,
-      pillar: 'sustainability',
-      title: 'Digital Responsável',
-      description: 'Foco na "TI Verde por Design", reduzindo o consumo energético de algoritmos e hardware de IA.',
-      details: ['Sobriedade algorítmica', 'Integração FinOps + GreenOps', 'Nuvem descarbonizada'],
-      insight: 'O "Digital Responsável" deixa de ser ética e passa a ser sobrevivência operacional energética.',
-      maturity: 70,
-      status: 'Consolidação'
-    },
-    {
-      id: 12,
-      pillar: 'org',
-      title: 'Gestão de Colegas Sintéticos',
-      description: 'Gestores agora orquestram times híbridos compostos por humanos e agentes autônomos de IA.',
-      details: ['Delegação inteligente', 'Auditoria algorítmica', 'Hibridização do fluxo de trabalho'],
-      insight: 'A nova liderança exige mediar o valor emocional humano com a eficiência das máquinas.',
-      maturity: 40,
-      status: 'Exploração'
-    },
-    {
-      id: 13,
-      pillar: 'org',
-      title: 'Prioridade às Habilidades',
-      description: 'Substituição de cargos rígidos e diplomas por mapeamento dinâmico de competências reais.',
-      details: ['Mercado interno de talentos', 'Granularidade de competências', 'Carreiras não lineares'],
-      insight: 'Diplomas perdem valor para o portfólio dinâmico e a capacidade de aprender (learnability).',
-      maturity: 65,
-      status: 'Integração'
-    },
-    {
-      id: 14,
-      pillar: 'org',
-      title: 'Organização Assíncrona',
-      description: 'Fim do "presenteísmo digital". Reuniões são raras e IA faz o relay de continuidade entre fusos.',
-      details: ['Fim da "reunionite"', 'Soberania do calendário individual', 'Cultura orientada a resultados'],
-      insight: 'A assincronia libera tempo para o "Deep Work" e concentração profunda.',
-      maturity: 60,
-      status: 'Integração'
-    },
-    {
-      id: 15,
-      pillar: 'org',
-      title: 'Soft Skills: O Novo Capital',
-      description: 'Com a técnica comoditizada pela IA, a empatia, pensamento crítico e discernimento tornam-se os ativos supremos.',
-      details: ['Arbitragem humana estratégica', 'Negociação complexa e ética', 'Design de visão (Prompt avançado)'],
-      insight: 'Quanto mais automatizado o mundo, mais valioso o que nos torna exclusivamente humanos.',
-      maturity: 95,
-      status: 'Consolidação'
-    }
-  ];
-
-  const filteredTrends = trends.filter(t => 
-    activePillar === 'all' || t.pillar === activePillar
-  );
-
-  return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans p-4 md:p-8 selection:bg-blue-100">
-      
-      {/* Botão de Dica de Interatividade Móvel */}
-      {showHint && (
-        <div className="fixed bottom-6 right-6 z-40 animate-bounce">
-          <div className="bg-blue-600 text-white p-4 rounded-2xl shadow-2xl flex items-center gap-3 border-2 border-white">
-            <MousePointer2 size={20} />
-            <span className="text-sm font-bold">Toque nos cartões para explorar!</span>
-            <button onClick={() => setShowHint(false)} className="hover:bg-blue-700 p-1 rounded-full">
-              <X size={16} />
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Header Section */}
-      <header className="max-w-7xl mx-auto mb-8 relative">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 border-b border-slate-200 pb-8">
-          <div className="flex-1">
-            <div className="inline-block px-4 py-1 rounded-full bg-blue-100 text-blue-700 font-bold text-xs mb-4 tracking-widest uppercase">
-              Relatório HUB Institute • 2026
-            </div>
-            <h1 className="text-4xl md:text-6xl font-black mb-4 bg-gradient-to-r from-blue-700 via-purple-700 to-indigo-700 bg-clip-text text-transparent leading-tight">
-              15 Tendências<br/>Estratégicas
-            </h1>
-            <p className="text-lg text-slate-500 max-w-2xl leading-relaxed">
-              Explorando a era do <span className="text-slate-900 font-bold">impacto real</span> e da integração sistêmica organizacional.
-            </p>
-          </div>
-          
-          <div className="flex justify-start md:justify-end items-start h-full self-start">
-             <img 
-               src={logoUrl} 
-               alt="Logo DET" 
-               className="h-16 md:h-20 w-auto object-contain hover:scale-105 transition-transform duration-300 drop-shadow-sm"
-               onError={(e) => { e.target.style.display = 'none'; }}
-             />
-          </div>
-        </div>
-      </header>
-
-      {/* Parágrafo Didático Introdutório */}
-      <section className="max-w-7xl mx-auto mb-10">
-        <div className="bg-gradient-to-br from-white to-blue-50/30 p-8 rounded-[2.5rem] border border-blue-100 shadow-sm relative overflow-hidden group">
-          <BookOpen className="absolute -right-4 -bottom-4 text-blue-500/10 group-hover:scale-110 transition-transform duration-700" size={120} />
-          <div className="relative z-10">
-            <h2 className="text-xs font-black uppercase tracking-[0.2em] text-blue-600 mb-3 flex items-center gap-2">
-              <BookOpen size={14} /> Introdução ao Estudo
-            </h2>
-            <p className="text-slate-600 text-lg md:text-xl leading-relaxed max-w-4xl">
-              Este infográfico sintetiza as 15 tendências fundamentais que moldarão o cenário corporativo global em 2026, marcando a transição definitiva da experimentação isolada para a <strong>maturidade operacional</strong>. Com base no estudo <span className="text-slate-900 font-bold italic">"15 Tendências para 2026: A era do impacto real da IA e da integração sistêmica"</span>, desenvolvido pelo <strong>HUB Institute</strong>, exploramos como a inteligência artificial agêntica, a regeneração ambiental e os novos modelos de trabalho baseados em habilidades se tornam os pilares indispensáveis para um crescimento resiliente e responsável no novo paradigma de mercado.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Guia de Escala de Maturidade (IMA) */}
-      <section className="max-w-7xl mx-auto mb-12">
-        <div className="bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm">
-          <div className="flex items-center gap-3 mb-6">
-             <BarChart4 className="text-blue-600" size={24} />
-             <h2 className="text-xl font-black uppercase tracking-widest text-slate-800">Guia de Escala de Maturidade (IMA)</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="flex flex-col gap-3 p-4 bg-slate-50 rounded-2xl border-l-4 border-emerald-400">
-               <span className="text-xs font-black text-emerald-700 uppercase tracking-tighter">0% - 45% • EXPLORAÇÃO</span>
-               <p className="text-xs text-slate-500 leading-relaxed">Tendências em fase de experimentação ou adoção por empresas pioneiras. Alto potencial de disrupção, mas integração sistêmica ainda limitada.</p>
-            </div>
-            <div className="flex flex-col gap-3 p-4 bg-slate-50 rounded-2xl border-l-4 border-blue-400">
-               <span className="text-xs font-black text-blue-700 uppercase tracking-tighter">46% - 69% • INTEGRAÇÃO</span>
-               <p className="text-xs text-slate-500 leading-relaxed">Tecnologias sendo conectadas ao core business. O foco é a interoperabilidade e o ganho de eficiência em processos estabelecidos.</p>
-            </div>
-            <div className="flex flex-col gap-3 p-4 bg-slate-50 rounded-2xl border-l-4 border-purple-400">
-               <span className="text-xs font-black text-purple-700 uppercase tracking-tighter">70% - 100% • CONSOLIDAÇÃO</span>
-               <p className="text-xs text-slate-500 leading-relaxed">O "Novo Normal". Tendências operacionais essenciais para competitividade, com métricas de desempenho claras e uso em larga escala.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Control Bar Interativo (Sem Campo de Busca) */}
-      <div className="max-w-7xl mx-auto mb-10 sticky top-4 z-30">
-        <div className="bg-white/90 backdrop-blur-xl p-3 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200 flex justify-center">
-          <div className="flex overflow-x-auto w-full md:w-auto pb-2 md:pb-0 no-scrollbar gap-2 px-1 justify-center">
-            {pillars.map(p => (
-              <button
-                key={p.id}
-                onClick={() => setActivePillar(p.id)}
-                className={`flex items-center gap-3 px-5 py-3 rounded-2xl transition-all whitespace-nowrap group ${
-                  activePillar === p.id 
-                    ? `${p.color} text-white shadow-lg scale-105` 
-                    : 'bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-800'
-                }`}
-              >
-                <p.icon size={18} className={activePillar === p.id ? 'animate-pulse' : 'group-hover:scale-110 transition-transform'} />
-                <span className="font-bold text-sm tracking-tight">{p.name}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Trends Grid */}
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filteredTrends.map(trend => (
-          <div 
-            key={trend.id}
-            onClick={() => setSelectedTrend(trend)}
-            className={`group bg-white rounded-[2.5rem] p-8 border-2 transition-all cursor-pointer relative overflow-hidden flex flex-col h-full hover:shadow-2xl hover:-translate-y-2 ${
-              trend.pillar === 'vision' ? 'hover:border-blue-500' :
-              trend.pillar === 'ai' ? 'hover:border-purple-500' :
-              trend.pillar === 'sustainability' ? 'hover:border-emerald-500' :
-              'hover:border-orange-500'
-            } border-slate-100`}
-          >
-            <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity bg-slate-100 p-2 rounded-full">
-              <Maximize2 size={16} className="text-slate-600" />
-            </div>
-
-            <div className="flex items-center gap-3 mb-6">
-              <div className={`w-3 h-3 rounded-full ${pillars.find(p => p.id === trend.pillar).color}`}></div>
-              <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${
-                trend.pillar === 'vision' ? 'text-blue-600' :
-                trend.pillar === 'ai' ? 'text-purple-600' :
-                trend.pillar === 'sustainability' ? 'text-emerald-600' :
-                'text-orange-600'
-              }`}>
-                {trend.status}
-              </span>
-            </div>
-
-            <h3 className="text-2xl font-black mb-4 leading-tight">
-              {trend.title}
-            </h3>
-            
-            <p className="text-slate-500 text-base mb-8 line-clamp-3 leading-relaxed flex-grow">
-              {trend.description}
-            </p>
-
-            <div className="mt-auto pt-6 border-t border-slate-50">
-                <div className="flex justify-between text-[10px] font-black text-slate-400 mb-2 uppercase tracking-tighter">
-                  <span>Maturidade de Adoção (IMA)</span>
-                  <span className="text-slate-900 font-bold">{trend.maturity}%</span>
-                </div>
-                <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                  <div 
-                    className={`h-full rounded-full transition-all duration-1000 ${pillars.find(p => p.id === trend.pillar).color}`} 
-                    style={{ width: `${trend.maturity}%` }}
-                  ></div>
-                </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Modal de Detalhes */}
-      {selectedTrend && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-300"
-          onClick={() => setSelectedTrend(null)}
-        >
-          <div 
-            className="bg-white rounded-[3rem] w-full max-w-3xl overflow-hidden shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-10 duration-500 flex flex-col md:flex-row"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className={`md:w-12 h-2 md:h-auto ${pillars.find(p => p.id === selectedTrend.pillar).color}`}></div>
-            
-            <div className="p-8 md:p-12 flex-1 relative overflow-y-auto max-h-[90vh]">
-              <button 
-                onClick={() => setSelectedTrend(null)}
-                className="absolute top-8 right-8 p-3 bg-slate-100 hover:bg-slate-900 hover:text-white rounded-2xl transition-all"
-              >
-                <X size={24} />
-              </button>
-
-              <div className="mb-10">
-                <span className={`inline-block px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-6 ${
-                  selectedTrend.pillar === 'vision' ? 'bg-blue-100 text-blue-700' :
-                  selectedTrend.pillar === 'ai' ? 'bg-purple-100 text-purple-700' :
-                  selectedTrend.pillar === 'sustainability' ? 'bg-emerald-100 text-emerald-700' :
-                  'bg-orange-100 text-orange-700'
-                }`}>
-                  Fase: {selectedTrend.status}
-                </span>
-                <h2 className="text-4xl md:text-5xl font-black mb-6 leading-tight text-slate-900">{selectedTrend.title}</h2>
-                <p className="text-xl text-slate-500 leading-relaxed font-medium">{selectedTrend.description}</p>
-              </div>
-
-              <div className="bg-blue-50/50 p-6 rounded-3xl border border-blue-100 mb-8 flex gap-4">
-                 <Target className="text-blue-600 shrink-0" size={24} />
-                 <div>
-                    <h4 className="text-sm font-black text-blue-900 uppercase mb-1">Nota de Maturidade Operacional</h4>
-                    <p className="text-xs text-blue-700 leading-relaxed">
-                      Em 2026, esta tendência é classificada como <strong>{selectedTrend.status}</strong> ({selectedTrend.maturity}%). 
-                      Isso indica que as empresas não estão mais em fase de PoC (Prova de Conceito), mas em plena {selectedTrend.maturity > 70 ? 'operação em larga escala com KPIs definidos' : 'fase de treinamento e conexão de dados estruturais'}.
-                    </p>
-                 </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
-                <div>
-                  <h4 className="font-black text-slate-900 mb-5 flex items-center gap-3 text-sm uppercase tracking-wider">
-                    <Layers size={18} className="text-blue-500" /> Componentes-Chave
-                  </h4>
-                  <ul className="space-y-4">
-                    {selectedTrend.details.map((d, i) => (
-                      <li key={i} className="flex items-start gap-4 text-slate-600 text-lg">
-                        <div className={`mt-2 w-2 h-2 rounded-full shrink-0 ${pillars.find(p => p.id === selectedTrend.pillar).color}`}></div>
-                        <span className="font-semibold">{d}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="bg-slate-50 p-8 rounded-[2.5rem] border border-slate-100">
-                  <h4 className="font-black text-slate-900 mb-4 flex items-center gap-3 text-sm uppercase tracking-wider">
-                    <Lightbulb size={18} className="text-yellow-500" /> Insight HUB
-                  </h4>
-                  <p className="text-slate-600 text-lg italic leading-relaxed">
-                    "{selectedTrend.insight}"
-                  </p>
-                </div>
-              </div>
-
-              <button 
-                onClick={() => setSelectedTrend(null)}
-                className="w-full mt-4 py-6 bg-slate-950 text-white font-black rounded-3xl hover:bg-slate-800 transition-all shadow-2xl uppercase tracking-[0.2em] text-sm"
-              >
-                Retornar ao Painel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Footer & Metodologia IMA */}
-      <footer className="max-w-7xl mx-auto mt-24 pt-12 border-t border-slate-200 pb-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-          <div className="col-span-1 md:col-span-2">
-            <h4 className="font-black text-2xl mb-6 flex items-center gap-3">
-              <ShieldCheck className="text-blue-600" size={28} /> Metodologia de Cálculo IMA
-            </h4>
-            <p className="text-slate-500 text-lg leading-relaxed mb-8 max-w-xl">
-              O Índice de Maturidade de Adoção (IMA) pondera três fatores: <br/>
-              <span className="font-bold">1. Soberania Tecnológica</span> (controle do dado), <br/>
-              <span className="font-bold">2. Integração Sistêmica</span> (conexão com ERP/CRM) e <br/>
-              <span className="font-bold">3. Desempenho Mensurável</span> (ROI comprovado).
-            </p>
-          </div>
-          
-          <div className="bg-slate-900 rounded-[2.5rem] p-10 text-white md:col-span-2 flex items-center justify-between">
-            <div className="flex-1">
-              <h4 className="font-black text-3xl mb-4">Maturidade 2026</h4>
-              <p className="text-slate-400 text-lg leading-relaxed italic">
-                Sinalizando o fim da experimentação e o início do impacto real.
-              </p>
-            </div>
-            <div className="flex flex-col items-center">
-               <div className="w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center mb-4">
-                  <Globe size={40} />
-               </div>
-               <span className="text-xs font-black tracking-widest uppercase text-blue-400">HUB INSTITUTE</span>
-            </div>
-          </div>
-        </div>
-        
-        <div className="mt-16 flex flex-col md:flex-row items-center justify-between text-slate-400 text-[10px] font-bold uppercase tracking-[0.3em] gap-6 text-center">
-          <span>© 2026 DET - HUB INSTITUTE • RELATÓRIO DE TENDÊNCIAS ESTRATÉGICAS</span>
-          <div className="flex items-center gap-6">
-             <button className="hover:text-slate-900 transition-colors">Notas Técnicas</button>
-             <button className="hover:text-slate-900 transition-colors">Contato Analistas</button>
-          </div>
-        </div>
-      </footer>
-
-      <style>{`
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tendências 2026 - Hub Institute</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & ReactDOM CDNs -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel para transpilar JSX no navegador -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-      `}</style>
-    </div>
-  );
-};
+        .glass-effect { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); }
+    </style>
+</head>
+<body class="bg-slate-50">
+    <div id="root"></div>
 
-export default App;
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        
+        // Adaptando ícones da Lucide para React em arquivo único
+        const Icon = ({ name, size = 24, className = "" }) => {
+            useEffect(() => {
+                lucide.createIcons();
+            }, [name]);
+            return <i data-lucide={name} style={{ width: size, height: size }} className={className}></i>;
+        };
+
+        const App = () => {
+            const [activePillar, setActivePillar] = useState('all');
+            const [selectedTrend, setSelectedTrend] = useState(null);
+            const [showHint, setShowHint] = useState(true);
+
+            const logoUrl = "https://i.postimg.cc/RZ7Shjmy/DET_-_azul.png";
+
+            const pillars = [
+                { id: 'all', name: 'Todos', icon: 'globe', color: 'bg-slate-500' },
+                { id: 'vision', name: 'Visão & Estratégia', icon: 'trending-up', color: 'bg-blue-600' },
+                { id: 'ai', name: 'IA & Digital', icon: 'cpu', color: 'bg-purple-600' },
+                { id: 'sustainability', name: 'Sustentabilidade', icon: 'leaf', color: 'bg-emerald-600' },
+                { id: 'org', name: 'Organizações', icon: 'users', color: 'bg-orange-600' },
+            ];
+
+            const trends = [
+                { id: 1, pillar: 'vision', title: 'CEO Aumentado', description: 'Liderança que utiliza IA para decisões em tempo real, agindo como líder de orquestra entre humanos e sistemas.', details: ['Copiloto de Decisão', 'Ciclo curto decisão-ação', 'Vantagem competitiva pessoal'], insight: 'O desafio não é mais entender a IA, mas usá-la para governar com precisão cirúrgica.', maturity: 85, status: 'Consolidação' },
+                { id: 2, pillar: 'vision', title: 'Estratégia por Cenários', description: 'Abandono de planos rígidos de 5 anos em favor de árvores estratégicas dinâmicas com planos B e C automáticos.', details: ['Multiplicidade de futuros', 'Testes de estresse digitais', 'Alocação dinâmica de recursos'], insight: 'Prepare-se para o "Cisne Negro" através de simulações constantes impulsionadas por IA.', maturity: 70, status: 'Consolidação' },
+                { id: 3, pillar: 'vision', title: 'Soberania Estratégica', description: 'Equilíbrio entre controle de ativos críticos e abertura para inovação rápida, sem burocracia excessiva.', details: ['Priorização de ativos essenciais', 'Dependências aceitáveis', 'Opcionalidade estratégica'], insight: 'Soberania não é autossuficiência, é ter a opção de retomar o controle quando necessário.', maturity: 60, status: 'Integração' },
+                { id: 4, pillar: 'vision', title: 'China como Referência (CaaB)', description: 'A China deixa de ser "imitadora" para ser o padrão global em velocidade, escala e integração vertical.', details: ['Inversão do ponto de vista', 'Benchmark de integração sistêmica', 'Testes de estresse de velocidade'], insight: 'Qualquer estratégia industrial sem a China como referência estrutural está incompleta.', maturity: 90, status: 'Consolidação' },
+                { id: 5, pillar: 'ai', title: 'IA Agêntica', description: 'Evolução de chatbots para agentes autônomos que planejam e executam objetivos complexos sem supervisão humana constante.', details: ['Sistemas de planejamento autônomo', 'Interoperabilidade de ecossistemas', 'Fim do prompt linear'], insight: 'A IA deixa de ser uma assistente para se tornar um membro ativo e operacional da equipe.', maturity: 75, status: 'Consolidação' },
+                { id: 6, pillar: 'ai', title: 'Rastreamento de Proveniência', description: 'Uso de marcas d’água invisíveis e blockchain para certificar a autenticidade de conteúdos contra deepfakes.', details: ['Padrão C2PA', 'Blockchain de conteúdo', 'Selo "Made by Human"'], insight: 'A confiança técnica é a nova moeda de troca em um mundo saturado de conteúdo sintético.', maturity: 65, status: 'Integração' },
+                { id: 7, pillar: 'ai', title: 'SLMs (Small Language Models)', description: 'Modelos de linguagem menores, especializados, privados e eficientes, superando os gigantes generalistas em tarefas específicas.', details: ['Otimização de custos/inferência', 'Soberania de dados "on-premise"', 'Hiperpersonalização preditiva'], insight: 'Modelos leves e cirúrgicos garantem segurança e economia para a inteligência proprietária.', maturity: 80, status: 'Consolidação' },
+                { id: 8, pillar: 'ai', title: 'Ecossistema Espacial', description: 'A integração de óculos XR/AR transforma o consumo 2D em experiências imersivas onde conteúdo e compra são um só.', details: ['Conteúdo transacional imersivo', 'Gêmeos digitais universais', 'Vision Commerce (pagamento por olhar)'], insight: 'Não visitamos mais sites; vivemos a experiência do produto em nosso ambiente.', maturity: 50, status: 'Integração' },
+                { id: 9, pillar: 'sustainability', title: 'Escopo 4 (Impacto Evitado)', description: 'Medição do quanto as soluções da empresa ajudam seus clientes e o planeta a economizar emissões.', details: ['Cálculo de contribuição positiva', 'Diferenciação competitiva CSRD', 'Venda baseada em impacto'], insight: 'Não basta não poluir; o valor agora reside em quanto você ajuda o ecossistema a descarbonizar.', maturity: 45, status: 'Exploração' },
+                { id: 10, pillar: 'sustainability', title: 'IA Circular', description: 'IA orquestrando o ciclo de vida total: design para reparabilidade, manutenção preditiva e reciclagem automatizada.', details: ['Eco-design generativo', 'Passaporte digital de componentes', 'Logística reversa inteligente'], insight: 'O lixo torna-se recurso valioso através da visão computacional e análise de dados.', maturity: 55, status: 'Integração' },
+                { id: 11, pillar: 'sustainability', title: 'Digital Responsável', description: 'Foco na "TI Verde por Design", reduzindo o consumo energético de algoritmos e hardware de IA.', details: ['Sobriedade algorítmica', 'Integração FinOps + GreenOps', 'Nuvem descarbonizada'], insight: 'O "Digital Responsável" deixa de ser ética e passa a ser sobrevivência operacional energética.', maturity: 70, status: 'Consolidação' },
+                { id: 12, pillar: 'org', title: 'Gestão de Colegas Sintéticos', description: 'Gestores agora orquestram times híbridos compostos por humanos e agentes autônomos de IA.', details: ['Delegação inteligente', 'Auditoria algorítmica', 'Hibridização do fluxo de trabalho'], insight: 'A nova liderança exige mediar o valor emocional humano com a eficiência das máquinas.', maturity: 40, status: 'Exploração' },
+                { id: 13, pillar: 'org', title: 'Prioridade às Habilidades', description: 'Substituição de cargos rígidos e diplomas por mapeamento dinâmico de competências reais.', details: ['Mercado interno de talentos', 'Granularidade de competências', 'Carreiras não lineares'], insight: 'Diplomas perdem valor para o portfólio dinâmico e a capacidade de aprender (learnability).', maturity: 65, status: 'Integração' },
+                { id: 14, pillar: 'org', title: 'Organização Assíncrona', description: 'Fim do "presenteísmo digital". Reuniões são raras e IA faz o relay de continuidade entre fusos.', details: ['Fim da "reunionite"', 'Soberania do calendário individual', 'Cultura orientada a resultados'], insight: 'A assincronia libera tempo para o "Deep Work" e concentração profunda.', maturity: 60, status: 'Integração' },
+                { id: 15, pillar: 'org', title: 'Soft Skills: O Novo Capital', description: 'Com a técnica comoditizada pela IA, a empatia, pensamento crítico e discernimento tornam-se os ativos supremos.', details: ['Arbitragem humana estratégica', 'Negociação complexa e ética', 'Design de visão (Prompt avançado)'], insight: 'Quanto mais automatizado o mundo, mais valioso o que nos torna exclusivamente humanos.', maturity: 95, status: 'Consolidação' }
+            ];
+
+            const filteredTrends = trends.filter(t => activePillar === 'all' || t.pillar === activePillar);
+
+            return (
+                <div className="min-h-screen p-4 md:p-8 select-none">
+                    {/* Botão de Dica */}
+                    {showHint && (
+                        <div className="fixed bottom-6 right-6 z-40 animate-bounce">
+                            <div className="bg-blue-600 text-white p-4 rounded-2xl shadow-2xl flex items-center gap-3 border-2 border-white">
+                                <Icon name="mouse-pointer-2" size={20} />
+                                <span className="text-sm font-bold">Toque nos cartões para explorar!</span>
+                                <button onClick={() => setShowHint(false)} className="hover:bg-blue-700 p-1 rounded-full"><Icon name="x" size={16} /></button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Header */}
+                    <header className="max-w-7xl mx-auto mb-8">
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 border-b border-slate-200 pb-8">
+                            <div className="flex-1">
+                                <div className="inline-block px-4 py-1 rounded-full bg-blue-100 text-blue-700 font-bold text-xs mb-4 tracking-widest uppercase">
+                                    Relatório HUB Institute • 2026
+                                </div>
+                                <h1 className="text-4xl md:text-6xl font-black mb-4 bg-gradient-to-r from-blue-700 via-purple-700 to-indigo-700 bg-clip-text text-transparent leading-tight">
+                                    15 Tendências<br/>Estratégicas
+                                </h1>
+                                <p className="text-lg text-slate-500 max-w-2xl leading-relaxed">
+                                    Explorando a era do <span className="text-slate-900 font-bold">impacto real</span> e da integração sistêmica organizacional.
+                                </p>
+                            </div>
+                            <div className="flex justify-end items-start h-full">
+                                <img src={logoUrl} alt="Logo DET" className="h-16 md:h-20 w-auto object-contain hover:scale-105 transition-transform duration-300 drop-shadow-sm" />
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Introdução Didática */}
+                    <section className="max-w-7xl mx-auto mb-10">
+                        <div className="bg-gradient-to-br from-white to-blue-50/30 p-8 rounded-[2.5rem] border border-blue-100 shadow-sm relative overflow-hidden group">
+                            <div className="relative z-10">
+                                <h2 className="text-xs font-black uppercase tracking-[0.2em] text-blue-600 mb-3 flex items-center gap-2">
+                                    <Icon name="book-open" size={14} /> Introdução ao Estudo
+                                </h2>
+                                <p className="text-slate-600 text-lg md:text-xl leading-relaxed max-w-4xl">
+                                    Este infográfico sintetiza as 15 tendências fundamentais que moldarão o cenário corporativo global em 2026, marcando a transição definitiva da experimentação isolada para a <strong>maturidade operacional</strong>. Com base no estudo <span className="text-slate-900 font-bold italic">"15 Tendências para 2026: A era do impacto real da IA e da integração sistêmica"</span>, desenvolvido pelo <strong>HUB Institute</strong>, exploramos como a IA agêntica e os novos modelos de trabalho se tornam pilares indispensáveis para um crescimento resiliente.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Guia IMA */}
+                    <section className="max-w-7xl mx-auto mb-12">
+                        <div className="bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm">
+                            <div className="flex items-center gap-3 mb-6">
+                                <Icon name="bar-chart-4" className="text-blue-600" size={24} />
+                                <h2 className="text-xl font-black uppercase tracking-widest text-slate-800">Guia de Escala de Maturidade (IMA)</h2>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div className="p-4 bg-slate-50 rounded-2xl border-l-4 border-emerald-400">
+                                    <span className="text-xs font-black text-emerald-700 uppercase tracking-tighter">0% - 45% • EXPLORAÇÃO</span>
+                                    <p className="text-xs text-slate-500 mt-2">Tendências em fase de experimentação por empresas pioneiras.</p>
+                                </div>
+                                <div className="p-4 bg-slate-50 rounded-2xl border-l-4 border-blue-400">
+                                    <span className="text-xs font-black text-blue-700 uppercase tracking-tighter">46% - 69% • INTEGRAÇÃO</span>
+                                    <p className="text-xs text-slate-500 mt-2">Conectadas ao core business com foco em interoperabilidade.</p>
+                                </div>
+                                <div className="p-4 bg-slate-50 rounded-2xl border-l-4 border-purple-400">
+                                    <span className="text-xs font-black text-purple-700 uppercase tracking-tighter">70% - 100% • CONSOLIDAÇÃO</span>
+                                    <p className="text-xs text-slate-500 mt-2">O "Novo Normal" com métricas de desempenho claras.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Navegação de Pilares */}
+                    <div className="max-w-7xl mx-auto mb-10 sticky top-4 z-30">
+                        <div className="bg-white/90 glass-effect p-3 rounded-3xl shadow-xl border border-slate-200 flex justify-center overflow-x-auto">
+                            <div className="flex gap-2 px-1">
+                                {pillars.map(p => (
+                                    <button
+                                        key={p.id}
+                                        onClick={() => setActivePillar(p.id)}
+                                        className={`flex items-center gap-3 px-5 py-3 rounded-2xl transition-all whitespace-nowrap ${
+                                            activePillar === p.id 
+                                                ? `${p.color} text-white shadow-lg scale-105` 
+                                                : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
+                                        }`}
+                                    >
+                                        <Icon name={p.icon} size={18} />
+                                        <span className="font-bold text-sm tracking-tight">{p.name}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Grid de Tendências */}
+                    <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {filteredTrends.map(trend => (
+                            <div 
+                                key={trend.id}
+                                onClick={() => setSelectedTrend(trend)}
+                                className={`group bg-white rounded-[2.5rem] p-8 border-2 transition-all cursor-pointer relative flex flex-col h-full hover:shadow-2xl hover:-translate-y-2 border-slate-100 ${
+                                    trend.pillar === 'vision' ? 'hover:border-blue-500' :
+                                    trend.pillar === 'ai' ? 'hover:border-purple-500' :
+                                    trend.pillar === 'sustainability' ? 'hover:border-emerald-500' : 'hover:border-orange-500'
+                                }`}
+                            >
+                                <div className="flex items-center gap-3 mb-6">
+                                    <div className={`w-3 h-3 rounded-full ${pillars.find(p => p.id === trend.pillar).color}`}></div>
+                                    <span className="text-[10px] font-black uppercase tracking-[0.2em]">{trend.status}</span>
+                                </div>
+                                <h3 className="text-2xl font-black mb-4 leading-tight">{trend.title}</h3>
+                                <p className="text-slate-500 text-base mb-8 line-clamp-3 flex-grow">{trend.description}</p>
+                                <div className="mt-auto pt-6 border-t border-slate-50">
+                                    <div className="flex justify-between text-[10px] font-black text-slate-400 mb-2 uppercase tracking-tighter">
+                                        <span>Maturidade (IMA)</span>
+                                        <span className="text-slate-900 font-bold">{trend.maturity}%</span>
+                                    </div>
+                                    <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                                        <div className={`h-full rounded-full ${pillars.find(p => p.id === trend.pillar).color}`} style={{ width: `${trend.maturity}%` }}></div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Modal Detalhado */}
+                    {selectedTrend && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md" onClick={() => setSelectedTrend(null)}>
+                            <div className="bg-white rounded-[3rem] w-full max-w-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row" onClick={(e) => e.stopPropagation()}>
+                                <div className={`md:w-12 h-2 md:h-auto ${pillars.find(p => p.id === selectedTrend.pillar).color}`}></div>
+                                <div className="p-8 md:p-12 flex-1 relative overflow-y-auto max-h-[90vh]">
+                                    <button onClick={() => setSelectedTrend(null)} className="absolute top-8 right-8 p-3 bg-slate-100 hover:bg-slate-900 hover:text-white rounded-2xl transition-all"><Icon name="x" size={24} /></button>
+                                    <span className="inline-block px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-6 bg-blue-100 text-blue-700">Fase: {selectedTrend.status}</span>
+                                    <h2 className="text-4xl md:text-5xl font-black mb-6 text-slate-900 leading-tight">{selectedTrend.title}</h2>
+                                    <div className="bg-blue-50/50 p-6 rounded-3xl border border-blue-100 mb-8 flex gap-4">
+                                        <Icon name="target" className="text-blue-600" />
+                                        <p className="text-xs text-blue-700 leading-relaxed italic">Esta tendência representa a plena {selectedTrend.maturity > 70 ? 'operação em larga escala' : 'fase de conexão estrutural'} planejada para 2026.</p>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                        <div>
+                                            <h4 className="font-black text-slate-900 mb-5 flex items-center gap-3 text-sm uppercase"><Icon name="layers" size={18} /> Componentes</h4>
+                                            <ul className="space-y-4">
+                                                {selectedTrend.details.map((d, i) => <li key={i} className="flex items-start gap-4 text-slate-600 font-semibold text-lg"><div className={`mt-2 w-2 h-2 rounded-full shrink-0 ${pillars.find(p => p.id === selectedTrend.pillar).color}`}></div>{d}</li>)}
+                                            </ul>
+                                        </div>
+                                        <div className="bg-slate-50 p-8 rounded-[2.5rem] border border-slate-100">
+                                            <h4 className="font-black text-slate-900 mb-4 flex items-center gap-3 text-sm uppercase"><Icon name="lightbulb" size={18} /> Insight</h4>
+                                            <p className="text-slate-600 italic leading-relaxed">"{selectedTrend.insight}"</p>
+                                        </div>
+                                    </div>
+                                    <button onClick={() => setSelectedTrend(null)} className="w-full mt-10 py-6 bg-slate-950 text-white font-black rounded-3xl hover:bg-slate-800 transition-all uppercase tracking-[0.2em] text-sm">Retornar ao Painel</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Footer */}
+                    <footer className="max-w-7xl mx-auto mt-24 pt-12 border-t border-slate-200 pb-16">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+                            <div className="md:col-span-2">
+                                <h4 className="font-black text-2xl mb-6 flex items-center gap-3"><Icon name="shield-check" className="text-blue-600" size={28} /> Notas Estratégicas</h4>
+                                <p className="text-slate-500 text-lg leading-relaxed">Índice de Maturidade ponderado por Soberania Tecnológica, Integração Sistêmica e ROI Comprovado.</p>
+                            </div>
+                            <div className="bg-slate-900 rounded-[2.5rem] p-10 text-white md:col-span-2 flex items-center justify-between">
+                                <h4 className="font-black text-3xl">Maturidade 2026</h4>
+                                <Icon name="globe" size={40} className="text-blue-600" />
+                            </div>
+                        </div>
+                        <div className="mt-16 text-center text-slate-400 text-[10px] font-bold uppercase tracking-[0.3em]">
+                            © 2026 DET - HUB INSTITUTE • RELATÓRIO DE TENDÊNCIAS ESTRATÉGICAS
+                        </div>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
